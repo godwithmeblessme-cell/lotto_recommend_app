@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>로또 통계 분석</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c9922a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="로또분석" />
+    <!--
+      아래 아이콘 경로는 이전에 Manus의 자체 스토리지(/manus-storage/...)를 가리키고 있었습니다.
+      해당 스토리지는 Manus 플랫폼 밖에서는 접근이 안 되므로, 직접 준비한 아이콘을
+      client/public/icons/icon-192.png, icon-512.png 로 넣고 경로를 맞춰주세요.
+    -->
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <!-- Kakao JS SDK (카카오톡 공유 기능용) -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+      integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+      crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+
+</html>

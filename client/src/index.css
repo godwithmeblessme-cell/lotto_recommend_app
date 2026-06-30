@@ -1,0 +1,307 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --ease-out-snappy: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 타이거마스크: 딥블랙 + 골드(타이거 옐로우) + 타이거 오렌지 액센트 */
+:root {
+  --radius: 0.9rem;
+  --background: oklch(0.16 0.012 60);
+  --foreground: oklch(0.94 0.012 90);
+  --card: oklch(0.205 0.015 60);
+  --card-foreground: oklch(0.94 0.012 90);
+  --popover: oklch(0.205 0.015 60);
+  --popover-foreground: oklch(0.94 0.012 90);
+  --primary: oklch(0.82 0.16 85); /* 타이거 골드 */
+  --primary-foreground: oklch(0.18 0.02 70);
+  --secondary: oklch(0.26 0.018 60);
+  --secondary-foreground: oklch(0.92 0.012 90);
+  --muted: oklch(0.26 0.012 60);
+  --muted-foreground: oklch(0.7 0.02 80);
+  --accent: oklch(0.7 0.19 45); /* 타이거 오렌지 */
+  --accent-foreground: oklch(0.18 0.02 70);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.32 0.02 65);
+  --input: oklch(0.3 0.02 65);
+  --ring: oklch(0.82 0.16 85);
+  --chart-1: oklch(0.82 0.16 85);
+  --chart-2: oklch(0.7 0.19 45);
+  --chart-3: oklch(0.6 0.12 70);
+  --chart-4: oklch(0.5 0.08 65);
+  --chart-5: oklch(0.4 0.05 60);
+  --sidebar: oklch(0.18 0.012 60);
+  --sidebar-foreground: oklch(0.94 0.012 90);
+  --sidebar-primary: oklch(0.82 0.16 85);
+  --sidebar-primary-foreground: oklch(0.18 0.02 70);
+  --sidebar-accent: oklch(0.26 0.018 60);
+  --sidebar-accent-foreground: oklch(0.94 0.012 90);
+  --sidebar-border: oklch(0.32 0.02 65);
+  --sidebar-ring: oklch(0.82 0.16 85);
+}
+
+.dark {
+  --background: oklch(0.16 0.012 60);
+  --foreground: oklch(0.94 0.012 90);
+  --card: oklch(0.205 0.015 60);
+  --card-foreground: oklch(0.94 0.012 90);
+  --popover: oklch(0.205 0.015 60);
+  --popover-foreground: oklch(0.94 0.012 90);
+  --primary: oklch(0.82 0.16 85);
+  --primary-foreground: oklch(0.18 0.02 70);
+  --secondary: oklch(0.26 0.018 60);
+  --secondary-foreground: oklch(0.92 0.012 90);
+  --muted: oklch(0.26 0.012 60);
+  --muted-foreground: oklch(0.7 0.02 80);
+  --accent: oklch(0.7 0.19 45);
+  --accent-foreground: oklch(0.18 0.02 70);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.32 0.02 65);
+  --input: oklch(0.3 0.02 65);
+  --ring: oklch(0.82 0.16 85);
+  --chart-1: oklch(0.82 0.16 85);
+  --chart-2: oklch(0.7 0.19 45);
+  --chart-3: oklch(0.6 0.12 70);
+  --chart-4: oklch(0.5 0.08 65);
+  --chart-5: oklch(0.4 0.05 60);
+  --sidebar: oklch(0.18 0.012 60);
+  --sidebar-foreground: oklch(0.94 0.012 90);
+  --sidebar-primary: oklch(0.82 0.16 85);
+  --sidebar-primary-foreground: oklch(0.18 0.02 70);
+  --sidebar-accent: oklch(0.26 0.018 60);
+  --sidebar-accent-foreground: oklch(0.94 0.012 90);
+  --sidebar-border: oklch(0.32 0.02 65);
+  --sidebar-ring: oklch(0.82 0.16 85);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Pretendard", system-ui, -apple-system, sans-serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  /* 모바일(미니앱) 우선 — 본문 영역 최대 폭 제한 */
+  .app-shell {
+    width: 100%;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 로또 번호 볼 */
+  .lotto-ball {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1a1407;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  .tiger-gradient {
+    background: linear-gradient(135deg, oklch(0.82 0.16 85), oklch(0.7 0.19 45));
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+}
+
+/* 번호대별 색상 (한국 로또 관례 차용, 톤만 조정) */
+.ball-1 { background: linear-gradient(135deg, #f6c453, #e8a020); }   /* 1-10 노랑 */
+.ball-2 { background: linear-gradient(135deg, #5aa9e6, #2f78c4); color:#fff; } /* 11-20 파랑 */
+.ball-3 { background: linear-gradient(135deg, #f0786f, #d8453a); color:#fff; } /* 21-30 빨강 */
+.ball-4 { background: linear-gradient(135deg, #b8b8b8, #8a8a8a); color:#fff; } /* 31-40 회색 */
+.ball-5 { background: linear-gradient(135deg, #7fd28a, #3fae55); color:#fff; } /* 41-45 초록 */
+
+/* ── 결제 성공 피드백 애니메이션 ── */
+@keyframes pay-pop-in {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes pay-check-draw {
+  0% { stroke-dashoffset: 48; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes pay-ring {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.pay-success-badge {
+  animation: pay-pop-in 0.4s var(--ease-out-snappy) both;
+}
+.pay-success-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: pay-check-draw 0.45s 0.18s var(--ease-out-snappy) forwards;
+}
+.pay-success-ring {
+  animation: pay-ring 0.7s 0.2s ease-out forwards;
+}
+
+/* 토스페이 시트 진행 바 */
+@keyframes pay-progress {
+  0% { width: 8%; }
+  100% { width: 100%; }
+}
+.pay-progress-fill {
+  animation: pay-progress 1.4s var(--ease-out-snappy) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pay-success-badge,
+  .pay-success-check,
+  .pay-success-ring,
+  .pay-progress-fill {
+    animation: none;
+  }
+  .pay-success-check { stroke-dashoffset: 0; }
+}
+
+/* 결제 성공 CTA 등장 */
+@keyframes pay-cta-reveal {
+  0% { transform: translateY(8px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.pay-cta-reveal {
+  animation: pay-cta-reveal 0.4s 0.55s var(--ease-out-snappy) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pay-cta-reveal { animation: none; }
+}
+
+/* ── 토스 스타일 페이지 진입 애니메이션 ── */
+@keyframes page-enter {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter 0.22s var(--ease-out-snappy) both;
+}
+
+/* 탭 전환 시 살짝 더 빠른 페이드 */
+@keyframes tab-enter {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.tab-enter {
+  animation: tab-enter 0.18s var(--ease-out-snappy) both;
+}
+
+/* ── 스켈레톤 shimmer ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    oklch(0.26 0.015 60) 25%,
+    oklch(0.32 0.02 65) 50%,
+    oklch(0.26 0.015 60) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ── 인라인 버튼 스피너 ── */
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+.btn-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: btn-spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.4em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter, .tab-enter { animation: none; }
+  .skeleton { animation: none; background: oklch(0.26 0.015 60); }
+  .btn-spinner { animation: none; }
+}

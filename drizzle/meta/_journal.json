@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1781509281525,
+      "tag": "0000_nice_korg",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1781510302016,
+      "tag": "0001_faithful_riptide",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1781610449972,
+      "tag": "0002_zippy_medusa",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1781618700697,
+      "tag": "0003_overrated_may_parker",
+      "breakpoints": true
+    }
+  ]
+}
