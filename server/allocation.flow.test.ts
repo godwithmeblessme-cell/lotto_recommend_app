@@ -17,9 +17,10 @@ import { computeAllocation, type CursorState } from "./allocation";
 const TOTAL = 100;
 
 describe("computeAllocation 기본 동작", () => {
-  it("커서가 없으면 0번 인덱스부터 need개를 순서대로 배분한다", () => {
+  it("커서가 없으면 need개만큼 배분하고 커서를 정확히 진행시킨다", () => {
     const r = computeAllocation("2026-W25", TOTAL, 10, undefined);
-    expect(r.pickedIndices).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(r.pickedIndices).toHaveLength(10);
+    expect(new Set(r.pickedIndices).size).toBe(10); // 중복 없음
     expect(r.cursor.nextIndex).toBe(10);
     expect(r.cursor.cycleNum).toBe(1);
   });
@@ -31,12 +32,21 @@ describe("computeAllocation 기본 동작", () => {
       second.pickedIndices.includes(i),
     );
     expect(overlap).toHaveLength(0);
-    expect(second.pickedIndices).toEqual([10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+    expect(second.pickedIndices).toHaveLength(10);
+    expect(second.cursor.nextIndex).toBe(20);
   });
 
-  it("cycle 1 은 사전식(원본) 순서 그대로다", () => {
-    const r = computeAllocation("2026-W25", TOTAL, 5, undefined);
-    expect(r.pickedIndices).toEqual([0, 1, 2, 3, 4]);
+  it("cycle 1 도 무작위로 섞인 순서다 (사용자 요청: 처음부터 골고루 무작위 배분)", () => {
+    const total = 1000;
+    const r = computeAllocation("2026-W25", total, 10, undefined);
+    const sortedAsLexicographic = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    expect(r.pickedIndices).not.toEqual(sortedAsLexicographic);
+    // 그래도 0..total-1 범위 안의, 중복 없는 값들이어야 한다.
+    expect(new Set(r.pickedIndices).size).toBe(10);
+    for (const idx of r.pickedIndices) {
+      expect(idx).toBeGreaterThanOrEqual(0);
+      expect(idx).toBeLessThan(total);
+    }
   });
 });
 

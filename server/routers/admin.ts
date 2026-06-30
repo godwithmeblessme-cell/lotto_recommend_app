@@ -10,7 +10,7 @@ import {
   adminListSubscriptions,
   adminSetSubscriptionStatus,
 } from "../db";
-import { poolCombosFromPicks, MASTER_POOL_TOTAL } from "@shared/lottoPool";
+import { poolCombosFromPicks, MASTER_POOL_TOTAL, comboKey } from "@shared/lottoPool";
 import { getWeekId, nextWeekId } from "@shared/week";
 import { TRPCError } from "@trpc/server";
 
@@ -20,6 +20,14 @@ const numbersSchema = z
   .max(45)
   .refine((arr) => new Set(arr).size === arr.length, {
     message: "중복된 번호가 있습니다.",
+  });
+
+/** 6개 번호로 이뤄진 조합 1개 (정렬 여부 무관, 서버에서 정렬) */
+const comboRowSchema = z
+  .array(z.number().int().min(1).max(45))
+  .length(6)
+  .refine((arr) => new Set(arr).size === 6, {
+    message: "조합 안에 중복된 번호가 있습니다.",
   });
 
 export const adminRouter = router({
@@ -87,6 +95,53 @@ export const adminRouter = router({
       }
       await setWeeklyPublished(input.weekId, input.published);
       return { weekId: input.weekId, published: input.published };
+    }),
+
+  /**
+   * 운영자가 직접 만든 조합 목록을 통째로 업로드 (CSV에서 파싱된 결과를 받음).
+   * "지정번호 → 교집합 자동계산" 방식(saveWeekly)과 달리, 조합을 그대로 신뢰하고 저장한다.
+   * 같은 조합이 두 번 들어오면 에러로 막아서, 실수로 같은 줄을 중복 입력하는 걸 방지한다.
+   */
+  uploadWeeklyCombos: adminProcedure
+    .input(
+      z.object({
+        weekId: z.string().optional(),
+        combos: z.array(comboRowSchema).min(1).max(500_000),
+        publish: z.boolean().optional().default(false),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const weekId = input.weekId || nextWeekId();
+
+      const sortedCombos = input.combos.map((c) => [...c].sort((a, b) => a - b));
+
+      const seen = new Set<string>();
+      for (const combo of sortedCombos) {
+        const key = comboKey(combo);
+        if (seen.has(key)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `중복된 조합이 있습니다: ${combo.join(",")}`,
+          });
+        }
+        seen.add(key);
+      }
+
+      // numbers 컬럼은 "운영자 지정번호" 용도였지만, 직접 업로드 방식에선 의미가 없어
+      // 정보용으로 "이 업로드에 등장한 모든 숫자"를 정렬해 저장해둔다 (필수 컬럼이라 비워둘 수 없음).
+      const allNumbers = Array.from(
+        new Set(sortedCombos.flat()),
+      ).sort((a, b) => a - b);
+
+      await upsertWeeklyPick({
+        weekId,
+        numbers: allNumbers,
+        combos: sortedCombos,
+        poolComboCount: sortedCombos.length,
+        published: input.publish,
+        createdBy: ctx.user.id,
+      });
+      return { weekId, poolComboCount: sortedCombos.length, published: input.publish };
     }),
 
   /** 주간 목록 (combos 는 무거우므로 메타만) */

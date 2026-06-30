@@ -52,11 +52,12 @@ export function seededShuffle(n: number, seed: number): number[] {
   return arr;
 }
 
-/** 초기 순서: cycle 1 은 사전식(원본) 순서 그대로 */
+/**
+ * 한 주(week)의 배분 순서를 만든다.
+ * 사용자 요청에 따라 cycle 1(처음 배분)부터 항상 무작위로 섞는다.
+ * (이전 버전은 cycle 1만 원본 순서 그대로 쓰고, 풀이 소진된 다음부터만 섞었음)
+ */
 function buildOrder(weekId: string, cycleNum: number, total: number): number[] {
-  if (cycleNum <= 1) {
-    return Array.from({ length: total }, (_, i) => i);
-  }
   return seededShuffle(total, seedFromString(`${weekId}#${cycleNum}`));
 }
 
