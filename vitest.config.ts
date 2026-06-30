@@ -1,7 +1,9 @@
 import { defineConfig } from "vitest/config";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const templateRoot = path.resolve(import.meta.dirname);
+// Node 18에서는 import.meta.dirname을 지원하지 않으므로 직접 계산한다.
+const templateRoot = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   root: templateRoot,
