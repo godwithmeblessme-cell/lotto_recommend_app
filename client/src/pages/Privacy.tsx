@@ -21,7 +21,7 @@ export default function Privacy() {
           <section>
             <h2 className="mb-2 text-base font-bold">제1조 (개인정보의 처리 목적)</h2>
             <p className="text-muted-foreground">
-              조작 로또번호 분석 (타이거마스크, 이하 "서비스")은 다음의 목적을 위해 개인정보를 처리합니다. 처리하는 개인정보는 다음의 목적 이외의 용도로 이용되지 않으며, 이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를 이행합니다.
+              로또 통계 분석 (운영: 무적 로또 태권 V 프로젝트, 이하 "서비스")은 다음의 목적을 위해 개인정보를 처리합니다. 처리하는 개인정보는 다음의 목적 이외의 용도로 이용되지 않으며, 이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를 이행합니다.
             </p>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
               <li>회원 가입 및 관리</li>
@@ -80,7 +80,7 @@ export default function Privacy() {
               서비스는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만 처리 및 피해 구제 등을 위해 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.
             </p>
             <div className="mt-2 rounded-xl border border-border bg-secondary/30 p-3 text-muted-foreground">
-              <p>개인정보 보호책임자: 타이거마스크 운영팀</p>
+              <p>개인정보 보호책임자: 무적 로또 태권 V 프로젝트 운영팀</p>
               <p className="mt-1">문의: 앱 내 고객센터를 통해 접수</p>
             </div>
           </section>

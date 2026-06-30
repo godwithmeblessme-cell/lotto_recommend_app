@@ -20,9 +20,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* 상단 브랜드 바 */}
         <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl">🐯</span>
+            <span className="text-xl">🤖</span>
             <span className="text-base font-extrabold tracking-tight">
-              조작 <span className="text-primary">로또번호 분석</span>
+              <span className="text-primary">로또 통계</span> 분석
             </span>
           </Link>
         </header>

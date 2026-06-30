@@ -94,7 +94,7 @@ export default function More() {
         <h1 className="text-xl font-extrabold">더보기</h1>
 
         <div className="space-y-2">
-          <MenuItem href="/story" icon={BookOpen} label="타이거마스크 이야기" />
+          <MenuItem href="/story" icon={BookOpen} label="태권 V 이야기" />
           {isAuthenticated && (
             <>
               <MenuItem href="/points" icon={Coins} label="럭키포인트" />

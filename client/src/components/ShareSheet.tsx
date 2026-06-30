@@ -42,10 +42,10 @@ function ShareCard({
     >
       {/* 헤더 */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-        <span style={{ fontSize: "1.4rem" }}>🐯</span>
+        <span style={{ fontSize: "1.4rem" }}>🤖</span>
         <div>
           <p style={{ fontWeight: 800, fontSize: "0.95rem", color: "#f0c040", lineHeight: 1.2 }}>
-            타이거마스크 분석
+            태권 V 분석
           </p>
           {planName && (
             <p style={{ fontSize: "0.65rem", color: "#b8a070", marginTop: "0.1rem" }}>

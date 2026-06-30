@@ -90,13 +90,13 @@ export default function Home() {
         <Card className="tiger-gradient relative overflow-hidden border-0 p-5 text-[#1a1407]">
           <div className="relative z-10">
             <p className="text-xs font-semibold opacity-80">
-              바른생활 사나이 타이거마스크의
+              데이터로 승부하는 태권 V의
             </p>
             <h1 className="mt-1 text-2xl font-extrabold leading-tight">
               이번 주 분석 번호
             </h1>
             <p className="mt-2 text-sm font-medium opacity-90">
-              타이거마스크가 직접 선별한 통계 분석 참고 번호에요.
+              태권 V가 직접 선별한 통계 분석 참고 번호에요.
             </p>
             <Link href="/recommend">
               <Button className="mt-4 bg-[#1a1407] text-primary hover:bg-[#2a2110]">
@@ -105,7 +105,7 @@ export default function Home() {
             </Link>
           </div>
           <span className="pointer-events-none absolute -right-3 -top-3 text-[7rem] opacity-20">
-            🐯
+            🤖
           </span>
         </Card>
 

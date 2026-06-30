@@ -207,7 +207,7 @@ function SuccessView({
       <div>
         <p className="text-lg font-extrabold">결제했어요!</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          타이거마스크의 분석이 함께합니다 🐯
+          태권 V의 분석이 함께합니다 🤖
         </p>
       </div>
       <div className="flex items-center gap-1.5 text-xs text-primary">

@@ -4,7 +4,7 @@ import { getLoginUrl } from "@/const";
 export function LoginGate({ message }: { message?: string }) {
   return (
     <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-8 text-center">
-      <span className="text-3xl">🐯</span>
+      <span className="text-3xl">🤖</span>
       <p className="text-sm text-muted-foreground">
         {message ?? "로그인하고 이번 주 분석 번호를 받아요."}
       </p>

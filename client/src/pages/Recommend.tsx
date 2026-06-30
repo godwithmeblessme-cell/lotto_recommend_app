@@ -27,7 +27,7 @@ export default function Recommend() {
         <div>
           <h1 className="text-xl font-extrabold">이번 주 분석 번호</h1>
           <p className="mt-1 text-xs text-muted-foreground">
-            타이거마스크가 직접 선별한 통계 분석 참고 번호에요.
+            태권 V가 직접 선별한 통계 분석 참고 번호에요.
           </p>
         </div>
 

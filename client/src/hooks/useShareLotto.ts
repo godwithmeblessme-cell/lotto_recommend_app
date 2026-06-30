@@ -71,7 +71,7 @@ export function useShareLotto() {
     const lines = combos
       .map((c, i) => `${i + 1}. ${[...c].sort((a, b) => a - b).join(", ")}`)
       .join("\n");
-    const description = `[타이거마스크 분석]\n${weekId ? weekId + " 분석번호\n" : ""}${lines}`;
+    const description = `[태권 V 분석]\n${weekId ? weekId + " 분석번호\n" : ""}${lines}`;
 
     window.Kakao.Share.sendDefault({
       objectType: "text",
@@ -82,7 +82,7 @@ export function useShareLotto() {
       },
       buttons: [
         {
-          title: "타이거마스크 분석 앱 열기",
+          title: "태권 V 분석 앱 열기",
           link: {
             mobileWebUrl: window.location.origin,
             webUrl: window.location.origin,
@@ -101,7 +101,7 @@ export function useShareLotto() {
     opts: ShareLottoOptions,
   ): Promise<void> {
     const blob = await elementToBlob(cardEl);
-    const file = new File([blob], "tigermask-lotto.png", { type: "image/png" });
+    const file = new File([blob], "taekwonv-lotto.png", { type: "image/png" });
 
     // Web Share API (모바일 기본 공유 시트)
     if (
@@ -113,8 +113,8 @@ export function useShareLotto() {
         .map((c, i) => `${i + 1}. ${[...c].sort((a, b) => a - b).join(", ")}`)
         .join("\n");
       await navigator.share({
-        title: "타이거마스크 분석번호",
-        text: `[타이거마스크 분석]\n${opts.weekId ? opts.weekId + " 분석번호\n" : ""}${lines}\n${window.location.origin}`,
+        title: "태권 V 분석번호",
+        text: `[태권 V 분석]\n${opts.weekId ? opts.weekId + " 분석번호\n" : ""}${lines}\n${window.location.origin}`,
         files: [file],
       });
       return;
@@ -124,7 +124,7 @@ export function useShareLotto() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "tigermask-lotto.png";
+    a.download = "taekwonv-lotto.png";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 3000);
   }
