@@ -1,4 +1,13 @@
 import "dotenv/config";
+// Node 19+ 에서는 Web Crypto API(globalThis.crypto)가 기본 내장되어 있지만,
+// 이 서버를 돌리는 Node 18에는 없어서 jose(JWT 서명 라이브러리)가
+// "crypto is not defined" 에러를 내며 카카오 로그인 콜백이 실패했다.
+// Node 내장 crypto 모듈의 webcrypto를 전역에 등록해 호환시킨다.
+import { webcrypto } from "crypto";
+if (!globalThis.crypto) {
+  // @ts-expect-error Node 18 globalThis 타입 정의에는 crypto가 없음
+  globalThis.crypto = webcrypto;
+}
 import express from "express";
 import { createServer } from "http";
 import net from "net";
