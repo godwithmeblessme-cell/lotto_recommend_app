@@ -14,12 +14,12 @@ importScripts("https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/10.14.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "여기를_채워주세요",
-  authDomain: "여기를_채워주세요",
-  projectId: "여기를_채워주세요",
-  storageBucket: "여기를_채워주세요",
-  messagingSenderId: "여기를_채워주세요",
-  appId: "여기를_채워주세요",
+  apiKey: "AIzaSyC7OMEQoVKlKZZ3sF-TMKwvv_ThP4kr5O4",
+  authDomain: "lotto-number-app.firebaseapp.com",
+  projectId: "lotto-number-app",
+  storageBucket: "lotto-number-app.firebasestorage.app",
+  messagingSenderId: "253621984362",
+  appId: "1:253621984362:web:61060cde456188d9523e13",
 });
 
 const messaging = firebase.messaging();
