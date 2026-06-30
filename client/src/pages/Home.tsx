@@ -198,7 +198,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {(["week1", "month", "year"] as PlanId[]).map((id) => (
+                  {(["trial", "month", "year"] as PlanId[]).map((id) => (
                     <Badge
                       key={id}
                       variant="outline"
