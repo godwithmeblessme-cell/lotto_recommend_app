@@ -16,6 +16,7 @@ import {
   Lock,
   Bell,
   BellOff,
+  UserX,
 } from "lucide-react";
 import { RELEASE_WINDOW_NOTICE } from "@shared/week";
 import { DISCLAIMER } from "@shared/plans";
@@ -105,6 +106,13 @@ export default function More() {
           )}
           <MenuItem href="/terms" icon={FileText} label="이용약관" />
           <MenuItem href="/privacy" icon={Lock} label="개인정보처리방침" />
+          {isAuthenticated && (
+            <MenuItem
+              href="/account/delete"
+              icon={UserX}
+              label="계정 및 데이터 삭제"
+            />
+          )}
         </div>
 
         {isAuthenticated && <PushNotificationCard />}

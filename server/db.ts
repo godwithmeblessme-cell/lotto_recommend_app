@@ -606,6 +606,31 @@ export async function getTotalAttendanceCount(userId: number) {
   return Number(rows[0]?.c ?? 0);
 }
 
+/**
+ * 회원 탈퇴: 이 회원과 관련된 모든 데이터를 삭제한다.
+ * (구글 플레이 정책상 "계정 및 데이터 삭제"가 필수 기능이라 추가함)
+ *
+ * 주의: 배분받았던 조합 기록(allocatedCombos)도 함께 지운다 — 이러면 그 회원이
+ * 받았던 번호 풀의 "이미 나간 조합" 표시가 사라지지만, 커서(allocationCursor)는
+ * 그대로 두기 때문에 같은 조합이 다른 회원에게 또 나갈 수는 없다(중복 배분 방지에는
+ * 영향 없음). 회원 개인정보를 깨끗이 지우는 게 우선이라 이렇게 처리한다.
+ */
+export async function deleteUserAccount(userId: number) {
+  const db = await requireDb();
+  await db.transaction(async (tx) => {
+    await tx.delete(subscriptions).where(eq(subscriptions.userId, userId));
+    await tx.delete(allocatedCombos).where(eq(allocatedCombos.userId, userId));
+    await tx.delete(pointsLedger).where(eq(pointsLedger.userId, userId));
+    await tx.delete(dailyClaims).where(eq(dailyClaims.userId, userId));
+    await tx.delete(pushTokens).where(eq(pushTokens.userId, userId));
+    await tx.delete(attendance).where(eq(attendance.userId, userId));
+    await tx
+      .delete(announcementDismissals)
+      .where(eq(announcementDismissals.userId, userId));
+    await tx.delete(users).where(eq(users.id, userId));
+  });
+}
+
 /* ------------------------- weekly announcements --------------------- */
 
 /** 이미 해당 주의 발표가 만들어졌는지 확인 (중복 발송 방지용) */

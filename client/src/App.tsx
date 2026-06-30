@@ -14,6 +14,7 @@ import Story from "./pages/Story";
 import Admin from "./pages/Admin";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import DeleteAccount from "./pages/DeleteAccount";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path={"/admin"} component={Admin} />
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/terms"} component={Terms} />
+      <Route path={"/account/delete"} component={DeleteAccount} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
