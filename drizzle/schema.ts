@@ -264,3 +264,41 @@ export const attendance = mysqlTable(
 );
 export type Attendance = typeof attendance.$inferSelect;
 export type InsertAttendance = typeof attendance.$inferInsert;
+
+/* ------------------------------------------------------------------ */
+/* 주간 당첨 발표 집계 (weekly_announcements)                          */
+/* 매주 일요일 9시(KST) 자동 작업이 1회만 생성 — weekId 가 PK라서      */
+/* 같은 주에 작업이 두 번 실행돼도 중복 발송되지 않는다(멱등).         */
+/* ------------------------------------------------------------------ */
+export const weeklyAnnouncements = mysqlTable("weekly_announcements", {
+  weekId: varchar("weekId", { length: 16 }).primaryKey(),
+  round: int("round").notNull(),
+  rank1Count: int("rank1Count").default(0).notNull(),
+  rank2Count: int("rank2Count").default(0).notNull(),
+  rank3Count: int("rank3Count").default(0).notNull(),
+  rank4Count: int("rank4Count").default(0).notNull(),
+  rank5Count: int("rank5Count").default(0).notNull(),
+  /** 발송 대상이었던 전체 배분 조합 수 (참고용) */
+  totalCombos: int("totalCombos").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type WeeklyAnnouncement = typeof weeklyAnnouncements.$inferSelect;
+export type InsertWeeklyAnnouncement = typeof weeklyAnnouncements.$inferInsert;
+
+/* ------------------------------------------------------------------ */
+/* 공지 닫기 기록 (announcement_dismissals)                            */
+/* "1주일간 보지 않기" 클릭 시 해당 회원+주차 조합을 기록한다.         */
+/* ------------------------------------------------------------------ */
+export const announcementDismissals = mysqlTable(
+  "announcement_dismissals",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull(),
+    weekId: varchar("weekId", { length: 16 }).notNull(),
+    dismissedAt: timestamp("dismissedAt").defaultNow().notNull(),
+  },
+  (t) => ({
+    userWeekIdx: uniqueIndex("ad_user_week_idx").on(t.userId, t.weekId),
+  }),
+);
+export type AnnouncementDismissal = typeof announcementDismissals.$inferSelect;

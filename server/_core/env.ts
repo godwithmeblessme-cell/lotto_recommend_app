@@ -16,4 +16,9 @@ export const ENV = {
   // Play Console > 설정 > API 액세스에서 만든 서비스 계정의 JSON 키 내용을 그대로 넣습니다.
   googlePlayPackageName: process.env.GOOGLE_PLAY_PACKAGE_NAME ?? "",
   googlePlayServiceAccountJson: process.env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON ?? "",
+
+  // --- Firebase 푸시 알림(FCM) 발송용 ---
+  // Firebase 콘솔 > 프로젝트 설정 > 서비스 계정 > "새 비공개 키 생성"으로 받은
+  // JSON 키 파일 내용을 그대로 넣습니다. (project_id가 이 안에 포함되어 있음)
+  firebaseServiceAccountJson: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ?? "",
 };

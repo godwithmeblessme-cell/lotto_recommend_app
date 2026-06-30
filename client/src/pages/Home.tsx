@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Gift, Crown, Coins, ChevronRight } from "lucide-react";
 import { PLANS, type PlanId, DISCLAIMER } from "@shared/plans";
 import { WinResultPopup } from "@/components/WinResultPopup";
+import { WeeklyAnnouncementBanner } from "@/components/WeeklyAnnouncementBanner";
 import { PageWrapper, SkeletonCard, SkeletonHero } from "@/components/PageWrapper";
 
 function StatusBanner() {
@@ -82,6 +83,9 @@ export default function Home() {
       {/* 당첨 결과 팝업 — 토요일 추첨 후 접속 시 자동 노출 */}
       <WinResultPopup />
       <PageWrapper className="space-y-4 px-4 py-5">
+        {/* 주간 당첨 발표 공지 (전체 통계) — 1주일간 보지 않기 가능 */}
+        <WeeklyAnnouncementBanner />
+
         {/* 히어로 */}
         <Card className="tiger-gradient relative overflow-hidden border-0 p-5 text-[#1a1407]">
           <div className="relative z-10">

@@ -35,6 +35,15 @@ export default function Admin() {
   const [resultNums, setResultNums] = useState(""); // "1,2,3,4,5,6"
   const [resultBonus, setResultBonus] = useState("");
 
+  // 주간 발표(푸시 알림) 수동 실행 상태
+  const [announceWeekId, setAnnounceWeekId] = useState("");
+  const [announceResult, setAnnounceResult] = useState<{
+    ran: boolean;
+    reason?: string;
+    rankCounts?: { 1: number; 2: number; 3: number; 4: number; 5: number };
+    broadcastSent?: { success: number; failed: number };
+  } | null>(null);
+
   const poolInfo = trpc.admin.poolInfo.useQuery(undefined, { enabled: isAdmin });
   const stats = trpc.admin.stats.useQuery(undefined, { enabled: isAdmin });
   const weeks = trpc.admin.listWeeks.useQuery(undefined, { enabled: isAdmin });
@@ -103,6 +112,18 @@ export default function Admin() {
       toast.success("구독 상태 변경됨");
       utils.admin.listSubscriptions.invalidate();
       utils.admin.stats.invalidate();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const runAnnounceMut = trpc.adminAnnouncement.runNow.useMutation({
+    onSuccess: (r) => {
+      setAnnounceResult(r);
+      if (r.ran) {
+        toast.success("주간 발표 + 푸시 발송 완료!");
+      } else {
+        toast.error(r.reason ?? "실행되지 않았습니다.");
+      }
     },
     onError: (e) => toast.error(e.message),
   });
@@ -349,6 +370,57 @@ export default function Admin() {
                 <p className="text-xs text-muted-foreground">당첨 결과가 없습니다.</p>
               )}
             </div>
+
+            {/* 주간 발표 수동 실행 — 보통은 일요일 9시(KST)에 자동 실행되지만,
+                테스트하거나 자동 실행을 놓쳤을 때 수동으로 다시 실행할 수 있다. */}
+            <Card className="space-y-2 p-4">
+              <p className="text-sm font-bold">📣 주간 발표 + 푸시 알림</p>
+              <p className="text-xs text-muted-foreground">
+                매주 일요일 오전 9시에 자동으로 1~5등 인원수를 집계해서
+                전체 회원에게 알림을 보내요. 당첨번호를 "저장+게시" 한 뒤,
+                지금 바로 보내보고 싶으면 아래 버튼을 눌러주세요. (같은 주차는
+                한 번만 발송돼요 — 중복 클릭해도 안전해요)
+              </p>
+              <Input
+                placeholder={`대상 주차 (비우면 이번 주: ${poolInfo.data?.currentWeekId ?? "-"})`}
+                value={announceWeekId}
+                onChange={(e) => setAnnounceWeekId(e.target.value)}
+                className="h-8 text-sm"
+              />
+              <Button
+                className="w-full"
+                disabled={runAnnounceMut.isPending}
+                onClick={() =>
+                  runAnnounceMut.mutate({ weekId: announceWeekId || undefined })
+                }
+              >
+                {runAnnounceMut.isPending ? "발송 중..." : "지금 발표 + 발송하기"}
+              </Button>
+              {announceResult && (
+                <div className="rounded-lg bg-secondary/50 p-3 text-xs">
+                  {announceResult.ran ? (
+                    <>
+                      <p className="font-semibold text-primary">발송 완료!</p>
+                      <p className="mt-1">
+                        1등 {announceResult.rankCounts?.[1] ?? 0}명 · 2등{" "}
+                        {announceResult.rankCounts?.[2] ?? 0}명 · 3등{" "}
+                        {announceResult.rankCounts?.[3] ?? 0}명 · 4등{" "}
+                        {announceResult.rankCounts?.[4] ?? 0}명 · 5등{" "}
+                        {announceResult.rankCounts?.[5] ?? 0}명
+                      </p>
+                      <p className="mt-1 text-muted-foreground">
+                        전체 발송 {announceResult.broadcastSent?.success ?? 0}건 성공
+                        {announceResult.broadcastSent?.failed
+                          ? `, ${announceResult.broadcastSent.failed}건 실패`
+                          : ""}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-muted-foreground">{announceResult.reason}</p>
+                  )}
+                </div>
+              )}
+            </Card>
           </TabsContent>
 
           {/* ── 주간 번호 ── */}

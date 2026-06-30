@@ -9,6 +9,7 @@ import { recommendRouter } from "./routers/recommend";
 import { adminRouter } from "./routers/admin";
 import { resultRouter, adminResultRouter } from "./routers/result";
 import { attendanceRouter } from "./routers/attendance";
+import { announcementRouter, adminAnnouncementRouter } from "./routers/announcement";
 import { upsertPushToken } from "./db";
 import { z } from "zod";
 
@@ -29,8 +30,10 @@ export const appRouter = router({
   recommend: recommendRouter,
   admin: adminRouter,
   adminResult: adminResultRouter,
+  adminAnnouncement: adminAnnouncementRouter,
   result: resultRouter,
   attendance: attendanceRouter,
+  announcement: announcementRouter,
 
   /** 푸시 토큰 등록 자리 (FCM 등 푸시 연동 시 사용) */
   push: router({

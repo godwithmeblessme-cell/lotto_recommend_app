@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, sql } from "drizzle-orm";
+import { and, desc, eq, gt, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser,
@@ -14,6 +14,11 @@ import {
   type InsertWeeklyPick,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import {
+  weeklyAnnouncements,
+  announcementDismissals,
+  type InsertWeeklyAnnouncement,
+} from "../drizzle/schema";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -356,7 +361,7 @@ export async function getRecentClaimDates(userId: number, limit = 14) {
 export async function upsertPushToken(
   userId: number,
   token: string,
-  platform = "toss",
+  platform = "android",
 ) {
   const db = await requireDb();
   const existing = await db
@@ -367,6 +372,35 @@ export async function upsertPushToken(
   if (existing.length === 0) {
     await db.insert(pushTokens).values({ userId, token, platform });
   }
+}
+
+/** 모든 회원의 푸시 토큰 (일요일 주간 결과 발표 알림 등 전체 발송용) */
+export async function getAllPushTokens() {
+  const db = await requireDb();
+  return db.select().from(pushTokens);
+}
+
+/** 특정 회원들의 푸시 토큰만 (당첨자 개별 축하 메시지용) */
+export async function getPushTokensForUsers(userIds: number[]) {
+  if (userIds.length === 0) return [];
+  const db = await requireDb();
+  return db
+    .select()
+    .from(pushTokens)
+    .where(inArray(pushTokens.userId, userIds));
+}
+
+/** 특정 주(week)에 배분된 모든 조합 (userId, combo, kind 포함) — 당첨자 집계용 */
+export async function getAllAllocationsForWeek(weekId: string) {
+  const db = await requireDb();
+  return db
+    .select({
+      userId: allocatedCombos.userId,
+      combo: allocatedCombos.combo,
+      kind: allocatedCombos.kind,
+    })
+    .from(allocatedCombos)
+    .where(eq(allocatedCombos.weekId, weekId));
 }
 
 /* ----------------------------- admin ------------------------------ */
@@ -570,4 +604,58 @@ export async function getTotalAttendanceCount(userId: number) {
     .from(attendance)
     .where(eq(attendance.userId, userId));
   return Number(rows[0]?.c ?? 0);
+}
+
+/* ------------------------- weekly announcements --------------------- */
+
+/** 이미 해당 주의 발표가 만들어졌는지 확인 (중복 발송 방지용) */
+export async function getWeeklyAnnouncement(weekId: string) {
+  const db = await requireDb();
+  const rows = await db
+    .select()
+    .from(weeklyAnnouncements)
+    .where(eq(weeklyAnnouncements.weekId, weekId))
+    .limit(1);
+  return rows[0];
+}
+
+/** 발표 집계 저장 (한 주에 1번만 생성되도록 호출 전에 getWeeklyAnnouncement 로 확인) */
+export async function insertWeeklyAnnouncement(input: InsertWeeklyAnnouncement) {
+  const db = await requireDb();
+  await db.insert(weeklyAnnouncements).values(input);
+}
+
+/** 최신 발표 (홈 화면 공지 배너용) */
+export async function getLatestWeeklyAnnouncement() {
+  const db = await requireDb();
+  const rows = await db
+    .select()
+    .from(weeklyAnnouncements)
+    .orderBy(desc(weeklyAnnouncements.createdAt))
+    .limit(1);
+  return rows[0];
+}
+
+/** 이 회원이 이 주의 공지를 닫았는지(="1주일간 보지 않기") 확인 */
+export async function hasUserDismissedAnnouncement(userId: number, weekId: string) {
+  const db = await requireDb();
+  const rows = await db
+    .select()
+    .from(announcementDismissals)
+    .where(
+      and(
+        eq(announcementDismissals.userId, userId),
+        eq(announcementDismissals.weekId, weekId),
+      ),
+    )
+    .limit(1);
+  return rows.length > 0;
+}
+
+/** 공지 닫기 기록 (이미 닫은 적 있으면 무시) */
+export async function dismissAnnouncement(userId: number, weekId: string) {
+  const db = await requireDb();
+  const already = await hasUserDismissedAnnouncement(userId, weekId);
+  if (already) return;
+  await db.insert(announcementDismissals).values({ userId, weekId });
 }
