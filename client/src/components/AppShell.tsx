@@ -55,4 +55,28 @@ export function AppShell({ children }: { children: ReactNode }) {
             const active =
               tab.path === "/"
                 ? location === "/"
-                : location.startsWith(tab.pat
+                : location.startsWith(tab.path);
+            const Icon = tab.icon;
+            return (
+              <Link
+                key={tab.path}
+                href={tab.path}
+                className={cn(
+                  "flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] transition-colors",
+                  active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 1.8} />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      <SubscribeSheet open={subOpen} onClose={() => setSubOpen(false)} />
+    </div>
+  );
+}
