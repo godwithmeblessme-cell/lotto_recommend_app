@@ -56,7 +56,7 @@ export const PLANS: Record<PlanId, Plan> = {
     recurring: true,
     blurb: "매주 분석 조합 50개 (연 정기구독, 최고 혜택)",
     badge: "최고 혜택",
-    playProductId: "year_sub",
+    playProductId: "year_plan",
   },
 };
 
