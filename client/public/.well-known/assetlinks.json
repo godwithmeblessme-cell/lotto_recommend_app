@@ -1,10 +1,12 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.lottoapp.kima",
-    "sha256_cert_fingerprints": [
-      "7E:8D:33:98:86:54:C1:16:BE:74:A8:9A:91:0D:76:F6:48:57:1D:FA:B8:1A:35:64:3A:58:49:9B:8E:51:B1:81"
-    ]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.lottoapp.kima",
+      "sha256_cert_fingerprints": [
+        "96:0E:F9:29:43:E1:71:9F:98:7F:8A:FF:73:2E:B3:A5:C3:33:A2:C2:F4:79:00:2E:1A:AC:21:BD:41:10:2D:8A"
+      ]
+    }
   }
-}]
+]
