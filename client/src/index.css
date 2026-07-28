@@ -151,11 +151,17 @@
   }
 
   /* 모바일(미니앱) 우선 — 본문 영역 최대 폭 제한 */
+/* 모바일에서는 화면을 꽉 채우고, 태블릿/PC처럼 넓은 화면에서만 앱처럼 폭 제한 */
   .app-shell {
     width: 100%;
-    max-width: 480px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  @media (min-width: 768px) {
+    .app-shell {
+      max-width: 480px;
+    }
   }
 
   /* 로또 번호 볼 */
