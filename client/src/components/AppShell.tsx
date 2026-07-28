@@ -46,11 +46,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <main className="flex-1 pb-32">{children}</main>
 
-        <div className="fixed bottom-16 left-1/2 z-20 w-full max-w-[480px] -translate-x-1/2">
+        <div className="fixed bottom-16 left-1/2 z-20 w-full max-w-full md:max-w-[480px] -translate-x-1/2">
           <BannerAd />
         </div>
 
-        <nav className="fixed bottom-0 left-1/2 z-30 flex w-full max-w-[480px] -translate-x-1/2 items-stretch border-t border-border bg-background/95 backdrop-blur">
+        <nav className="fixed bottom-0 left-1/2 z-30 flex w-full max-w-full md:max-w-[480px] -translate-x-1/2 items-stretch border-t border-border bg-background/95 backdrop-blur">
           {TABS.map((tab) => {
             const active =
               tab.path === "/"
