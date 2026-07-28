@@ -1,8 +1,5 @@
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
-import {
-  getActiveSubscription,
-  getPublishedWeeklyPick,
-} from "../db";
+import { getActiveSubscription, listLottoResults } from "../db";
 import { PLANS, type PlanId } from "@shared/plans";
 import {
   getWeekId,
@@ -10,24 +7,35 @@ import {
   RELEASE_CLOSED_NOTICE,
   RELEASE_WINDOW_NOTICE,
 } from "@shared/week";
-import { allocateForUser } from "../allocation";
+import { allocateFromMasterPool } from "../allocation";
+import { comboKey } from "@shared/lottoPool";
+
+/**
+ * DB에 저장된 당첨 결과(관리자 입력)를 배분 제외 키 집합으로 변환.
+ * winners.json(과거 1228회)은 lottoPool 쪽에서 자동 제외되므로,
+ * 여기서는 그 이후 회차(운영자가 매주 저장하는 최신 당첨번호)를 커버한다.
+ */
+async function recentWinnerKeys(): Promise<Set<string>> {
+  try {
+    const rows = await listLottoResults(500);
+    return new Set(
+      rows.map((r) => comboKey((r.winNumbers as number[]) ?? [])),
+    );
+  } catch {
+    return new Set();
+  }
+}
 
 export const recommendRouter = router({
   /** 방출 시간/주차/안내 — 공개 (로그인 불필요) */
   weekStatus: publicProcedure.query(async () => {
     const weekId = getWeekId();
     const open = isReleaseWindow();
-    let published = false;
-    try {
-      const pick = await getPublishedWeeklyPick(weekId);
-      published = !!pick;
-    } catch {
-      published = false;
-    }
     return {
       weekId,
       open,
-      published,
+      // 마스터 풀 자동 배분 체제 — 운영자 주간 게시 없이 항상 준비 상태
+      published: true,
       notice: open ? RELEASE_WINDOW_NOTICE : RELEASE_CLOSED_NOTICE,
     };
   }),
@@ -36,7 +44,9 @@ export const recommendRouter = router({
    * 이번 주 내 추천 조합.
    * - 구독 없으면 잠금(구독 유도)
    * - 방출 시간 외에는 안내
-   * - 구독 등급별 combosPerWeek (2배 옵션 시 x2) 만큼 배분
+   * - 구독 등급별 combosPerWeek (2배 옵션 시 x2) 만큼
+   *   마스터 풀(약 321만 조합)에서 중복 없이 자동 배분
+   * - 역대 + 최신 1등 당첨번호는 자동 제외
    */
   myWeekly: protectedProcedure.query(async ({ ctx }) => {
     const weekId = getWeekId();
@@ -55,9 +65,7 @@ export const recommendRouter = router({
     }
 
     const plan = PLANS[sub.planId as PlanId];
-    const count = plan
-      ? plan.combosPerWeek * (sub.isDouble ? 2 : 1)
-      : 0;
+    const count = plan ? plan.combosPerWeek * (sub.isDouble ? 2 : 1) : 0;
 
     if (!open) {
       return {
@@ -72,26 +80,14 @@ export const recommendRouter = router({
       };
     }
 
-    const pick = await getPublishedWeeklyPick(weekId);
-    if (!pick || (pick.combos as number[][]).length === 0) {
-      return {
-        locked: true,
-        reason: "not_published" as const,
-        weekId,
-        open,
-        combos: [] as number[][],
-        plan,
-        expectedCount: count,
-        notice: "이번 주 추천 번호가 곧 공개됩니다.",
-      };
-    }
+    const excluded = await recentWinnerKeys();
 
-    const result = await allocateForUser(
+    const result = await allocateFromMasterPool(
       weekId,
       ctx.user.id,
       count,
-      pick.combos as number[][],
       "subscription",
+      excluded,
     );
 
     return {
