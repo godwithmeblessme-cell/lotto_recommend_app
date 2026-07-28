@@ -153,7 +153,79 @@ export async function listUserSubscriptions(userId: number) {
     .from(subscriptions)
     .where(eq(subscriptions.userId, userId))
     .orderBy(desc(subscriptions.createdAt));
+}/* ============================================================
+   ★ server/db.ts 에 추가할 코드 ★
+   listUserSubscriptions 함수 바로 아래에 통째로 붙여넣으세요.
+   (import 수정 필요 없음 — and, eq, inArray, sql, subscriptions 모두
+    파일 상단에 이미 import 되어 있습니다)
+   ============================================================ */
+
+/** 지금까지 실제 결제된 연 구독(year) 수 — 선착순 현황 표시용 */
+export async function countYearSubscriptions(): Promise<number> {
+  const db = await requireDb();
+  const rows = await db
+    .select({ c: sql<number>`count(*)` })
+    .from(subscriptions)
+    .where(
+      and(
+        eq(subscriptions.planId, "year"),
+        eq(subscriptions.source, "google_play"),
+        inArray(subscriptions.status, ["active", "expired"]),
+      ),
+    );
+  return Number(rows[0]?.c ?? 0);
 }
+
+/** 선착순 상한 도달 시 던지는 오류 (구독 발급 안 됨) */
+export class YearCapReachedError extends Error {
+  constructor() {
+    super("YEAR_CAP_REACHED");
+    this.name = "YearCapReachedError";
+  }
+}
+
+/**
+ * 연 구독을 "정확히 cap 명"까지만 발급한다. (딱 500명에서 끊는 핵심)
+ *
+ * 원리: 한 트랜잭션 안에서
+ *   1) 구독 행을 먼저 넣고
+ *   2) 연 구독 전체를 잠금 조회(FOR UPDATE)로 다시 센다.
+ *      → 동시에 결제한 다른 요청은 이 잠금이 풀릴 때까지 대기하므로
+ *        두 요청이 동시에 500번째 자리를 차지하는 일이 불가능하다.
+ *   3) cap 을 초과했으면 트랜잭션을 되돌리고(YearCapReachedError)
+ *      발급하지 않는다. → 501번째는 절대 생기지 않음.
+ *
+ * cap 이 null 이면 무제한 판매(검사 생략).
+ */
+export async function createYearSubscriptionCapped(
+  input: InsertSubscription,
+  cap: number | null,
+): Promise<number> {
+  const db = await requireDb();
+  return db.transaction(async (tx) => {
+    const res = await tx.insert(subscriptions).values(input).$returningId();
+    const id = res[0]?.id ?? 0;
+
+    if (cap !== null) {
+      const rows = await tx
+        .select({ id: subscriptions.id })
+        .from(subscriptions)
+        .where(
+          and(
+            eq(subscriptions.planId, "year"),
+            eq(subscriptions.source, "google_play"),
+            inArray(subscriptions.status, ["active", "expired"]),
+          ),
+        )
+        .for("update");
+      if (rows.length > cap) {
+        throw new YearCapReachedError();
+      }
+    }
+    return id;
+  });
+}
+
 
 /** 동일 구글플레이 purchaseToken 으로 이미 발급된 구독이 있는지 확인 (중복 발급 방지) */
 export async function getSubscriptionByPurchaseToken(purchaseToken: string) {
