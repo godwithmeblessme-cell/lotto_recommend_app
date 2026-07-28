@@ -119,18 +119,17 @@ export function SubscribeSheet({ open, onClose }: SubscribeSheetProps) {
             </div>
 
             <p className="mt-3 text-xl font-black leading-snug text-foreground">
-              딱 한 번{" "}
+              선착순 500명!
+              <br />
               <span className="text-primary">
                 {year.priceKRW.toLocaleString()}원
               </span>
-              으로
-              <br />
-              1년 구독!!!
+              으로 <span className="text-primary">평생</span> 1년 구독!!!
             </p>
             <p className="mt-1.5 text-sm text-muted-foreground">
               매주 분석 조합{" "}
-              <span className="font-bold text-foreground">50개</span> · 1년 내내
-              (자동 갱신 없음)
+              <span className="font-bold text-foreground">50개</span> · 첫 500명은
+              이 가격 그대로 매년 갱신
             </p>
 
             <ul className="mt-3 space-y-1.5 text-sm">
@@ -144,7 +143,7 @@ export function SubscribeSheet({ open, onClose }: SubscribeSheetProps) {
               </li>
               <li className="flex items-center gap-2 font-semibold text-primary">
                 <Check className="h-4 w-4 shrink-0" />
-                선착순 마감 후 가격이 인상돼요 — 지금이 가장 저렴!
+                500명 마감되면 가격이 올라요 — 지금이 평생 최저가!
               </li>
             </ul>
 
