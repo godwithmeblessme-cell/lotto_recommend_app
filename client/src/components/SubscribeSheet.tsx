@@ -55,18 +55,13 @@ export function SubscribeSheet({ open, onClose }: SubscribeSheetProps) {
       );
       return;
     }
-    // 연 구독은 결제 시작 전에 선착순 마감 여부를 서버에서 한 번 더 확인
-    if (planId === "year") {
-      try {
-        const fresh = await utils.subscription.pricingStatus.fetch();
-        if (fresh.soldOut) {
-          toast.error("앗, 선착순 정원이 방금 모두 마감되었어요!");
-          utils.subscription.pricingStatus.invalidate();
-          return;
-        }
-      } catch {
-        // 확인 실패 시에도 서버 발급 단계에서 한 번 더 막히므로 진행
-      }
+    // 연 구독: 화면에 로드된 최신 선착순 현황으로 마감 여부 확인
+    // (결제창은 버튼 클릭 직후 바로 열려야 하므로 여기서 서버 조회를 하면 안 됨.
+    //  정확한 500명 컷은 서버 발급 단계에서 최종 보장된다.)
+    if (planId === "year" && soldOut) {
+      toast.error("앗, 선착순 정원이 모두 마감되었어요!");
+      utils.subscription.pricingStatus.invalidate();
+      return;
     }
     setLoading(planId);
     try {
