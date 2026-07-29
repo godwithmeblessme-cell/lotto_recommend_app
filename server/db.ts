@@ -128,8 +128,19 @@ export async function getActiveSubscription(userId: number) {
     )
     .orderBy(desc(subscriptions.createdAt));
   // endAt 이 지난 active 는 무시 (lifetime 은 endAt null)
-  const valid = rows.find((r) => r.endAt === null || r.endAt > now);
-  return valid;
+  const validRows = rows.filter((r) => r.endAt === null || r.endAt > now);
+  if (validRows.length === 0) return undefined;
+  // 여러 구독이 동시에 살아있으면(예: 무료체험 후 유료 결제) 항상 가장 높은
+  // 등급을 우선한다. year(50) > month(20) > trial(10). 돈 낸 사람이 절대
+  // 무료체험 혜택으로 격하되지 않도록 보장.
+  const RANK: Record<string, number> = { year: 3, month: 2, trial: 1 };
+  validRows.sort((a, b) => {
+    const ra = RANK[a.planId as string] ?? 0;
+    const rb = RANK[b.planId as string] ?? 0;
+    if (rb !== ra) return rb - ra; // 등급 높은 순
+    return (b.createdAt ?? 0) - (a.createdAt ?? 0); // 같으면 최신 순
+  });
+  return validRows[0];
 }
 
 export async function createSubscription(input: InsertSubscription) {
